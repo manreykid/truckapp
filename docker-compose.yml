@@ -1,0 +1,22 @@
+services:
+  backend:
+    build: ./backend
+    environment:
+      # Absolute paths inside the container; ./data is mounted at /data below.
+      DATABASE_PATH: /data/truckapp.db
+      DATA_SEED_FILE: /data/a1_poi.json
+      ALLOWED_ORIGINS: http://localhost:8000
+      LOG_LEVEL: info
+    volumes:
+      - ./data:/data
+    expose:
+      - "8080"
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      - backend
+    ports:
+      - "8000:80"
+    restart: unless-stopped

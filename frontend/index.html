@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truck App Dashboard</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main id="auth-container" aria-hidden="false">
+        <section class="auth-box">
+            <h2>Lokaal Portaal</h2>
+            <p style="color: var(--text-secondary-color); margin-bottom: 20px; font-size: 14px;">Log in op uw lokale server.</p>
+            <div id="login-view">
+                <input type="text" id="login-user" value="admin" placeholder="Gebruikersnaam">
+                <input type="password" id="login-password" value="admin" placeholder="Wachtwoord">
+                <button id="login-button">Lokaal Inloggen</button>
+            </div>
+        </section>
+    </main>
+
+    <main id="dashboard-container" class="hidden" aria-hidden="true">
+        <header class="navbar">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <i class="fa fa-truck" style="font-size: 24px; color: var(--button-bg-color);"></i>
+                <span id="user-display-name">Lokale Beheerder</span>
+            </div>
+            <div class="nav-controls">
+                <label class="theme-switch" for="theme-checkbox">
+                    <span class="theme-label">Dark Mode</span>
+                    <div class="theme-switch-wrapper">
+                        <input type="checkbox" id="theme-checkbox" />
+                        <div class="slider round"></div>
+                    </div>
+                </label>
+                <button id="logout-button"><i class="fa fa-sign-out"></i> Uitloggen</button>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <aside class="dashboard-sidebar">
+                <h3>Navigatie</h3>
+                <nav>
+                    <button id="show-planner-view" class="active"><i class="fa fa-map-marker"></i> Nieuwe Rit Plannen</button>
+                    <button id="show-trips-view"><i class="fa fa-road"></i> Ritten Overzicht</button>
+                    <button id="show-vehicles-view"><i class="fa fa-truck"></i> Wagenpark</button>
+                    <button id="show-drivers-view"><i class="fa fa-users"></i> Chauffeurs</button>
+                </nav>
+            </aside>
+            <section class="dashboard-main">
+
+                <div id="planner-view" class="view">
+                    <div class="planner-container">
+                        <div class="planner-sidebar">
+                            <h3>Stap 1: Route Bepalen</h3>
+                            <label>Startpunt</label>
+                            <input type="text" id="planner-start" placeholder="Bijv. Amsterdam">
+                            <label>Bestemming</label>
+                            <input type="text" id="planner-end" placeholder="Bijv. Parijs">
+                            <label>Gepland Vertrek (invloed op drukte)</label>
+                            <input type="datetime-local" id="planner-departure">
+
+                            <button id="plan-route-button"><i class="fa fa-search"></i> Bereken Route</button>
+                            <p id="planner-loading" class="hidden" style="color: var(--button-bg-color); font-weight: bold; margin-top:10px;"><i class="fa fa-spinner fa-spin"></i> Gegevens ophalen...</p>
+
+                            <div id="planner-results" class="hidden">
+                                <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
+                                <h4>Stap 2: Route Samenvatting</h4>
+                                <div style="background: var(--hover-color); padding: 10px; border-radius: 6px; margin-bottom: 15px;">
+                                    <p style="margin: 0 0 5px 0;" id="route-summary-distance"></p>
+                                    <p style="margin: 0 0 5px 0;" id="route-summary-time"></p>
+                                    <p style="margin: 0; color: #d9534f; font-weight: bold;" id="route-traffic-warning" class="hidden"><i class="fa fa-warning"></i> Let op: Spitsuur vertraging berekend!</p>
+                                </div>
+
+                                <p style="margin-bottom: 5px;"><strong>Voorstel Rustplaats:</strong></p>
+                                <p style="margin-top: 0; color: var(--button-bg-color);" id="rest-stop-suggestion"></p>
+
+                                <div id="planner-assignment" style="margin-top: 20px;">
+                                    <h4>Stap 3: Toewijzen &amp; Opslaan</h4>
+                                    <label>Selecteer Voertuig</label>
+                                    <select id="assign-vehicle" style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 6px;"></select>
+
+                                    <label>Selecteer Chauffeur</label>
+                                    <select id="assign-driver" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 6px;"></select>
+
+                                    <button id="save-trip-button"><i class="fa fa-save"></i> Opslaan in Ritten Overzicht</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="map"></div>
+                    </div>
+                </div>
+
+                <div id="trips-view" class="view hidden">
+                    <div class="list-header">
+                        <h2>Ritten Overzicht</h2>
+                        <button id="refresh-trips-button" class="refresh-button"><i class="fa fa-refresh"></i> Verversen</button>
+                    </div>
+                    <div class="item-list">
+                        <ul id="trips-list"></ul>
+                    </div>
+                </div>
+
+                <div id="vehicles-view" class="view hidden">
+                    <div class="list-header"><h2>Wagenparkbeheer</h2></div>
+                    <div class="management-section">
+                        <div class="add-form">
+                            <h3>Nieuw Voertuig</h3>
+                            <input type="text" id="vehicle-plate" placeholder="Kenteken (bv. 12-ABC-3)">
+                            <input type="text" id="vehicle-brand" placeholder="Merk (bv. Scania)">
+                            <input type="text" id="vehicle-model" placeholder="Model (bv. R450)">
+                            <button id="add-vehicle-button"><i class="fa fa-plus"></i> Voertuig Opslaan</button>
+                        </div>
+                        <div class="item-list">
+                            <ul id="vehicles-list"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="drivers-view" class="view hidden">
+                    <div class="list-header"><h2>Chauffeursbeheer</h2></div>
+                    <div class="management-section">
+                        <div class="add-form">
+                            <h3>Nieuwe Chauffeur</h3>
+                            <input type="text" id="driver-firstname" placeholder="Voornaam">
+                            <input type="text" id="driver-lastname" placeholder="Achternaam">
+                            <input type="text" id="driver-employeeId" placeholder="Personeelsnummer">
+                            <button id="add-driver-button"><i class="fa fa-plus"></i> Chauffeur Opslaan</button>
+                        </div>
+                        <div class="item-list">
+                            <ul id="drivers-list"></ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <script src="config.js"></script>
+    <script type="module" src="script.js"></script>
+</body>
+</html>

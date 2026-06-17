@@ -1,0 +1,130 @@
+/* --- CSS Variabelen voor Themakleuren --- */
+:root {
+    --bg-color: #f0f2f5;
+    --bg-secondary-color: #ffffff;
+    --text-color: #1c1e21;
+    --text-secondary-color: #65676b;
+    --border-color: #dddfe2;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --hover-color: #e9ecef;
+    --button-bg-color: #1877f2;
+    --button-hover-bg-color: #166fe5;
+}
+
+body.dark-theme {
+    --bg-color: #18191a;
+    --bg-secondary-color: #242526;
+    --text-color: #e4e6eb;
+    --text-secondary-color: #b0b3b8;
+    --border-color: #3a3b3c;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --hover-color: #3a3b3c;
+    --button-bg-color: #2d88ff;
+    --button-hover-bg-color: #1b74e4;
+}
+
+/* Algemene styling met variabelen */
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.hidden { display: none !important; }
+
+/* Authenticatie Container */
+#auth-container { display: flex; justify-content: center; align-items: center; height: 100%; background-color: var(--bg-color); }
+.auth-box { background: var(--bg-secondary-color); padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px var(--shadow-color); text-align: center; width: 100%; max-width: 400px; }
+.auth-box h2 { color: var(--text-color); margin-bottom: 5px; }
+.auth-box input { border: 1px solid var(--border-color); background-color: var(--bg-color); color: var(--text-color); width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
+.auth-box button { width: 100%; padding: 12px; border: none; border-radius: 6px; background-color: var(--button-bg-color); color: white; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: background 0.2s; }
+.auth-box button:hover { background-color: var(--button-hover-bg-color); }
+
+/* Dashboard Container */
+#dashboard-container { display: flex; flex-direction: column; height: 100vh; }
+.navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background-color: var(--bg-secondary-color); border-bottom: 1px solid var(--border-color); box-shadow: 0 2px 4px var(--shadow-color); z-index: 10; }
+#user-display-name { font-weight: bold; font-size: 18px; }
+#logout-button { background-color: var(--bg-color); color: var(--text-color); padding: 8px 16px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.2s; }
+#logout-button:hover { background-color: var(--border-color); }
+
+/* Dashboard Layout */
+.dashboard-content { display: flex; flex-grow: 1; overflow: hidden; }
+.dashboard-sidebar { width: 220px; background: var(--bg-secondary-color); border-right: 1px solid var(--border-color); padding: 20px; flex-shrink: 0; display: flex; flex-direction: column;}
+.dashboard-sidebar h3 { margin-top: 0; color: var(--text-secondary-color); font-size: 12px; text-transform: uppercase; letter-spacing: 1px;}
+.dashboard-sidebar nav { display: flex; flex-direction: column; gap: 8px; }
+.dashboard-sidebar nav button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 12px; background: none; border: none; border-radius: 8px; text-align: left; font-size: 15px; font-weight: 500; cursor: pointer; color: var(--text-color); transition: background 0.2s;}
+.dashboard-sidebar nav button:hover { background-color: var(--hover-color); }
+.dashboard-sidebar nav button.active { background-color: var(--button-bg-color); color: white; }
+
+.dashboard-main { flex-grow: 1; overflow-y: auto; padding: 20px; background-color: var(--bg-color); }
+.view { height: 100%; animation: fadeIn 0.3s; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Management Pagina's */
+.management-section { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; align-items: start; }
+.add-form, .item-list { background-color: var(--bg-secondary-color); padding: 20px; border-radius: 10px; box-shadow: 0 1px 3px var(--shadow-color); }
+.add-form h3, .item-list h3 { margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px; }
+.add-form input, .add-form select, .add-form textarea { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 6px; box-sizing: border-box; background-color: var(--bg-color); color: var(--text-color); font-family: inherit;}
+.add-form label { display: block; text-align: left; margin-bottom: 6px; font-weight: 600; font-size: 13px; color: var(--text-secondary-color); }
+.add-form button { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 15px; transition: opacity 0.2s; }
+.add-form button:hover { opacity: 0.9; }
+.item-list ul { list-style-type: none; padding: 0; margin: 0; }
+.item-list li { padding: 15px 10px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; border-radius: 6px; transition: background 0.2s; }
+.item-list li:hover { background-color: var(--hover-color); }
+.item-list li:last-child { border-bottom: none; }
+
+/* Routeplanner Weergave */
+#planner-view { padding: 0; }
+.planner-container { display: flex; height: 100%; width: 100%; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px var(--shadow-color); }
+.planner-sidebar { width: 320px; padding: 20px; background-color: var(--bg-secondary-color); border-right: 1px solid var(--border-color); overflow-y: auto; flex-shrink: 0; display: flex; flex-direction: column;}
+.planner-sidebar h3 { margin-top: 0; }
+.planner-sidebar input, .planner-sidebar button, .planner-sidebar select { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 6px; box-sizing: border-box; background-color: var(--bg-color); color: var(--text-color);}
+.planner-sidebar label { font-size: 13px; font-weight: bold; color: var(--text-secondary-color); display: block; margin-bottom: 5px;}
+.planner-sidebar button { background-color: var(--button-bg-color); color: white; font-weight: bold; font-size: 15px; border: none; transition: opacity 0.2s;}
+.planner-sidebar button:hover { opacity: 0.9; }
+#save-trip-button { background-color: #198754; margin-bottom: 0; }
+#map { flex-grow: 1; z-index: 1; min-height: 400px; }
+
+/* Legenda en Leaflet Overrides */
+.custom-legend { padding: 10px; font: 14px/16px Arial, Helvetica, sans-serif; background: var(--bg-secondary-color); box-shadow: 0 0 15px var(--shadow-color); border-radius: 8px; line-height: 24px; color: var(--text-color); border: 1px solid var(--border-color); }
+.custom-legend i { width: 18px; height: 18px; float: left; margin-right: 10px; opacity: 0.9; border-radius: 4px; }
+.leaflet-routing-container { display: none !important; }
+body.dark-theme .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(95%) contrast(90%); }
+
+/* Dark Theme Schakelaar */
+.nav-controls { display: flex; align-items: center; gap: 20px; }
+.theme-label { font-size: 14px; font-weight: 500; color: var(--text-secondary-color); margin-right: 10px; }
+.theme-switch { position: relative; display: inline-flex; align-items: center; }
+.theme-switch-wrapper { position: relative; width: 44px; height: 24px;}
+.theme-switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; }
+.slider.round { border-radius: 24px; }
+.slider.round:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+input:checked + .slider { background-color: var(--button-bg-color); }
+input:checked + .slider:before { transform: translateX(20px); }
+
+/* Beheerknoppen */
+.list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;}
+.list-header h2, .list-header h3 { margin: 0; }
+.refresh-button { background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 4px; padding: 5px 10px; font-size: 14px; cursor: pointer; color: var(--text-color); transition: background 0.2s; }
+.refresh-button:hover { background: var(--border-color); }
+.item-actions { display: flex; gap: 10px; }
+.item-actions button { background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 4px; padding: 5px 8px; cursor: pointer; font-size: 14px; transition: background 0.2s;}
+.item-actions button:hover { background: var(--border-color); }
+.delete-btn { color: #dc3545; }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dashboard-content { flex-direction: column; }
+    .dashboard-sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border-color); padding: 10px;}
+    .dashboard-sidebar nav { flex-direction: row; overflow-x: auto; padding-bottom: 5px;}
+    .dashboard-sidebar nav button { white-space: nowrap; width: auto; }
+    .management-section { grid-template-columns: 1fr; }
+    .planner-container { flex-direction: column-reverse; }
+    .planner-sidebar { width: 100%; height: auto; border-right: none; border-top: 1px solid var(--border-color); }
+    #map { min-height: 300px; }
+}

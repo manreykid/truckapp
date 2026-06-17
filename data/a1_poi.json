@@ -1,0 +1,82 @@
+[
+  {
+    "Naam": "Honswijck",
+    "Snelweg": "A1",
+    "Richting": "Rechts",
+    "Type": "poi_snelweg",
+    "Latitude": 52.3205346,
+    "Longitude": 5.0792278,
+    "OSM_Class": "highway",
+    "OSM_Type_Tag": "services"
+  },
+  {
+    "Naam": "Hackelaar",
+    "Snelweg": "A1",
+    "Richting": "Links",
+    "Type": "poi_snelweg",
+    "Latitude": 52.3221142,
+    "Longitude": 5.0827356,
+    "OSM_Class": "highway",
+    "OSM_Type_Tag": "services"
+  },
+  {
+    "Naam": "Ronduit",
+    "Snelweg": "A1",
+    "Richting": "Rechts",
+    "Type": "poi_snelweg",
+    "Latitude": 52.294336,
+    "Longitude": 5.1769962,
+    "OSM_Class": "highway",
+    "OSM_Type_Tag": "rest_area"
+  },
+  {
+    "Naam": "Bastion",
+    "Snelweg": "A1",
+    "Richting": "Links",
+    "Type": "poi_snelweg",
+    "Latitude": 52.2953673,
+    "Longitude": 5.177806,
+    "OSM_Class": "highway",
+    "OSM_Type_Tag": "rest_area"
+  },
+  {
+    "Naam": "Palmpol",
+    "Snelweg": "A1",
+    "Richting": "Rechts",
+    "Type": "poi_snelweg",
+    "Latitude": 52.1634389,
+    "Longitude": 5.5354272,
+    "OSM_Class": "highway",
+    "OSM_Type_Tag": "services"
+  },
+  {
+    "Naam": "Tolnegen",
+    "Snelweg": "A1",
+    "Richting": "Rechts",
+    "Type": "poi_snelweg",
+    "Latitude": 52.1851723,
+    "Longitude": 5.6759995,
+    "OSM_Class": "highway",
+    "OSM_Type_Tag": "rest_area"
+  },
+  {
+    "Naam": "Lucasgat",
+    "Snelweg": "A1",
+    "Richting": "Links",
+    "Type": "poi_snelweg",
+    "Latitude": 52.1952079,
+    "Longitude": 5.835026,
+    "OSM_Class": "highway",
+    "OSM_Type_Tag": "services"
+  },
+  {
+    "Naam": "De Hucht",
+    "Snelweg": "A1",
+    "Richting": "Links",
+    "Type": "poi_snelweg",
+    "Latitude": 52.1854214,
+    "Longitude": 5.8905158,
+    "OSM_Class": "highway",
+    "OSM_Type_Tag": "services"
+  }
+]
