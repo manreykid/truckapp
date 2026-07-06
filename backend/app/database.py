@@ -66,9 +66,17 @@ SCHEMA: tuple[str, ...] = (
 
 
 def _connect() -> sqlite3.Connection:
-    conn = sqlite3.connect(settings.database_file)
+    # check_same_thread=False: FastAPI runs sync dependencies in a threadpool
+    # and may tear down (close) the connection in a different worker thread
+    # than the one that created it. Each connection still serves exactly one
+    # request sequentially, so this is safe.
+    conn = sqlite3.connect(settings.database_file, check_same_thread=False)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
+    # WAL lets readers proceed while a write is in flight; busy_timeout makes
+    # concurrent writers wait instead of failing with "database is locked".
+    conn.execute("PRAGMA journal_mode = WAL")
+    conn.execute("PRAGMA busy_timeout = 5000")
     return conn
 
 

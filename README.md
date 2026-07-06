@@ -9,6 +9,22 @@ service stops geocoded from OpenStreetMap.
 > data is **single-tenant** — see [Roadmap](#roadmap) before exposing this
 > publicly.
 
+## Features
+
+- **Route planner** (Leaflet + OSRM) with address search, a Dutch rush-hour
+  heuristic on the expected travel time, and **multi-stop EU rest planning**:
+  one suggested rest stop per 4.5 hours of driving (EU regulation 561/2006),
+  drawn on the map and listed in the summary.
+- **Trip workflow**: plan → assign vehicle & driver → save; then move each trip
+  through *Gepland → Onderweg → Afgerond/Geannuleerd* from the trips overview.
+  Every trip can be re-opened on the map with one click.
+- **Dashboard tiles**: planned trips, trips underway, vehicles, drivers —
+  served by `/api/stats`.
+- **Fleet management**: vehicles and drivers CRUD, with assignment shown per
+  trip (joined server-side).
+- **POI dataset tooling**: an offline geocoder (name → validated coordinates
+  via OSM tags) and a Firebase/Firestore import tool for existing data.
+
 ## Architecture
 
 ```
@@ -35,18 +51,22 @@ truckapp/
 ├── start.sh                # serve frontend on :8000 (dev)
 ├── backend/
 │   ├── app/                # config, database, crud, models, routers, main
-│   ├── tests/              # pytest API tests
+│   ├── tests/              # pytest API + import-tool tests
 │   ├── requirements*.txt
 │   ├── pyproject.toml      # ruff + pytest config
 │   └── Dockerfile
 ├── frontend/
-│   ├── index.html / style.css / script.js / config.js
+│   ├── index.html / style.css / config.js
+│   ├── js/                 # ES modules: app, ui, map, api, utils
 │   ├── nginx.conf          # serves static + proxies /api -> backend
 │   └── Dockerfile
 ├── geocoder/
-│   └── geocoder.py
+│   ├── geocoder.py
+│   └── input/nl_snelweg_pois.json   # master list: rest stops per highway
+├── tools/
+│   └── import_firebase.py  # Firestore export -> seed/DB converter
 ├── data/
-│   └── a1_poi.json         # POI seed (replace with your full dataset)
+│   └── a1_poi.json         # POI seed (legacy name; may span all highways)
 └── .github/workflows/ci.yml
 ```
 
@@ -100,21 +120,45 @@ Interactive docs at `http://localhost:8080/docs` when the backend is running.
 | Method | Path                  | Description                  |
 | ------ | --------------------- | ---------------------------- |
 | GET    | `/api/health`         | Health check                 |
+| GET    | `/api/stats`          | Dashboard counters (vehicles, drivers, trips by status) |
 | GET    | `/api/pois`           | All rest stops / fuel / POIs |
 | GET/POST/PUT/DELETE | `/api/vehicles`       | Fleet CRUD      |
 | GET/POST/PUT/DELETE | `/api/drivers`        | Drivers CRUD    |
-| GET/POST/PATCH/DELETE | `/api/trips`        | Trips CRUD (PATCH for status) |
+| GET/POST/PATCH/DELETE | `/api/trips`        | Trips CRUD; responses include `vehiclePlate`/`driverName`; PATCH validates status (`Gepland`/`Onderweg`/`Afgerond`/`Geannuleerd`) |
+
+Trip listing is enriched server-side with the assigned vehicle plate and
+driver name, so clients never join collections themselves.
 
 ## Refreshing the POI dataset
+
+Two supported routes:
+
+**A. Import an existing Firebase/Firestore export** (recommended if you
+already collected POIs there):
+
+```bash
+# 1. Export on the machine that has the Firebase service-account key
+#    (see tools/import_firebase.py docstring for an export snippet).
+# 2. Convert + load:
+python3 tools/import_firebase.py pois_export.json                     # writes data/a1_poi.json
+python3 tools/import_firebase.py pois_export.json --db data/truckapp.db --replace
+```
+
+The converter normalises field-name variants, reads Firestore GeoPoints, and
+automatically repairs legacy integer-encoded coordinates
+(`523205346` → `52.3205346`).
+
+**B. Geocode from scratch** with the offline geocoder:
 
 ```bash
 cd geocoder
 pip install -r requirements.txt
-python geocoder.py --output ../data/a1_poi.json
+python geocoder.py --input input/nl_snelweg_pois.json --output ../data/a1_poi.json
 ```
 
-Then restart the backend with an empty `pois` table (delete `data/truckapp.db`
-or `TRUNCATE`) to re-seed. See `geocoder/README.md`.
+Either way: restart the backend with an empty `pois` table (delete
+`data/truckapp.db`) to re-seed from the JSON, or use `--db ... --replace` to
+write into the live database directly. See `geocoder/README.md`.
 
 ## Testing & linting
 
@@ -150,4 +194,7 @@ Production-hardening still to do (deliberately deferred this round):
    GraphHopper) and consider live traffic instead of the rush-hour heuristic.
 4. **PostgreSQL + PostGIS** — migrate from SQLite when going multi-user; only
    `backend/app/database.py` and `crud.py` should need changes.
-5. **Backups & deployment** — automated DB backups; deploy behind HTTPS.
+5. **Vendor frontend libraries** — Leaflet & plugins are loaded from CDNs;
+   bundling them into `frontend/vendor/` removes the third-party dependency
+   (the dashboard already degrades gracefully if the CDN is unreachable).
+6. **Backups & deployment** — automated DB backups; deploy behind HTTPS.

@@ -17,9 +17,16 @@ pip install -r requirements.txt
 # Use the built-in A1 list:
 python geocoder.py
 
+# Or the full national dataset (all highways, ~215 POIs; takes a while
+# at 1 request/second):
+python geocoder.py --input input/nl_snelweg_pois.json --output ../data/a1_poi.json
+
 # Or provide your own input (JSON array of {"Naam": ..., "Snelweg": ...}):
 python geocoder.py --input my_pois.json --output ../data/a1_poi.json
 ```
+
+`input/nl_snelweg_pois.json` is the digitized master list of rest-stop names
+per highway (A1..A348), preserved from the original data-collection effort.
 
 ## Notes
 

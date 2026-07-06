@@ -79,8 +79,8 @@
                                     <p style="margin: 0; color: #d9534f; font-weight: bold;" id="route-traffic-warning" class="hidden"><i class="fa fa-warning"></i> Let op: Spitsuur vertraging berekend!</p>
                                 </div>
 
-                                <p style="margin-bottom: 5px;"><strong>Voorstel Rustplaats:</strong></p>
-                                <p style="margin-top: 0; color: var(--button-bg-color);" id="rest-stop-suggestion"></p>
+                                <p style="margin-bottom: 5px;"><strong>Voorgestelde rustplaatsen (EU-rijtijden):</strong></p>
+                                <ul id="rest-stop-list"></ul>
 
                                 <div id="planner-assignment" style="margin-top: 20px;">
                                     <h4>Stap 3: Toewijzen &amp; Opslaan</h4>
@@ -102,6 +102,24 @@
                     <div class="list-header">
                         <h2>Ritten Overzicht</h2>
                         <button id="refresh-trips-button" class="refresh-button"><i class="fa fa-refresh"></i> Verversen</button>
+                    </div>
+                    <div class="stats-row">
+                        <div class="stat-tile">
+                            <div class="stat-value" id="stat-gepland">0</div>
+                            <div class="stat-label">Geplande ritten</div>
+                        </div>
+                        <div class="stat-tile">
+                            <div class="stat-value" id="stat-onderweg">0</div>
+                            <div class="stat-label">Onderweg</div>
+                        </div>
+                        <div class="stat-tile">
+                            <div class="stat-value" id="stat-vehicles">0</div>
+                            <div class="stat-label">Voertuigen</div>
+                        </div>
+                        <div class="stat-tile">
+                            <div class="stat-value" id="stat-drivers">0</div>
+                            <div class="stat-label">Chauffeurs</div>
+                        </div>
                     </div>
                     <div class="item-list">
                         <ul id="trips-list"></ul>
@@ -147,6 +165,6 @@
     <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
     <script src="config.js"></script>
-    <script type="module" src="script.js"></script>
+    <script type="module" src="js/app.js"></script>
 </body>
 </html>

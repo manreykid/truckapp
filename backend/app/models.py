@@ -6,7 +6,12 @@ Field names intentionally mirror the existing frontend and geocoder output
 
 from __future__ import annotations
 
+from typing import Literal
+
 from pydantic import BaseModel, Field
+
+# Trip lifecycle. Validated at the API boundary; stored as TEXT in SQLite.
+TripStatus = Literal["Gepland", "Onderweg", "Afgerond", "Geannuleerd"]
 
 
 # --- POIs (read-only via the API; populated by the geocoder/seed) ---
@@ -50,7 +55,7 @@ class TripCreate(BaseModel):
     startLocation: str = Field(min_length=1)
     endLocation: str = Field(min_length=1)
     departureTime: str | None = None
-    status: str = "Gepland"
+    status: TripStatus = "Gepland"
     expectedTimeMinutes: int | None = None
     distanceKm: float | None = None
     vehicleId: int | None = None
@@ -64,7 +69,7 @@ class TripUpdate(BaseModel):
     startLocation: str | None = None
     endLocation: str | None = None
     departureTime: str | None = None
-    status: str | None = None
+    status: TripStatus | None = None
     expectedTimeMinutes: int | None = None
     distanceKm: float | None = None
     vehicleId: int | None = None
@@ -73,3 +78,14 @@ class TripUpdate(BaseModel):
 
 class Trip(TripCreate):
     id: int
+    # Denormalised for display, filled by a LEFT JOIN in the data layer.
+    vehiclePlate: str | None = None
+    driverName: str | None = None
+
+
+# --- Dashboard statistics ---
+class Stats(BaseModel):
+    vehicles: int
+    drivers: int
+    tripsTotal: int
+    tripsByStatus: dict[str, int]

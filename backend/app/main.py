@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .config import settings
 from .database import get_connection, init_db
-from .routers import drivers, pois, trips, vehicles
+from .routers import drivers, pois, stats, trips, vehicles
 from .seed import seed_pois
 
 logging.basicConfig(level=settings.log_level.upper())
@@ -41,6 +41,7 @@ app.include_router(pois.router)
 app.include_router(vehicles.router)
 app.include_router(drivers.router)
 app.include_router(trips.router)
+app.include_router(stats.router)
 
 
 @app.get("/api/health", tags=["meta"])
