@@ -136,6 +136,11 @@ Two supported routes:
 **A. Import an existing Firebase/Firestore export** (recommended if you
 already collected POIs there):
 
+> ⚠️ **Never commit or upload `serviceAccountKey.json`.** It grants full
+> admin access to your Firebase project and belongs on your own machine
+> only (it is listed in `.gitignore`). If it ever ends up in a repository
+> or chat, revoke it in the Firebase Console and generate a new one.
+
 ```bash
 # 1. Export on the machine that has the Firebase service-account key
 #    (see tools/import_firebase.py docstring for an export snippet).

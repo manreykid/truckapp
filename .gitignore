@@ -24,6 +24,11 @@ env/
 .env.local
 .env.*.local
 
+# --- Firebase / Google Cloud credentials (NEVER commit these) ---
+serviceAccountKey.json
+*firebase-adminsdk*.json
+pois_export.json
+
 # --- Node (frontend tooling, if added later) ---
 node_modules/
 
