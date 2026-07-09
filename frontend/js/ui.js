@@ -1,4 +1,5 @@
 // DOM rendering and event wiring.
+import { attachAutocomplete } from "./autocomplete.js";
 import { esc, fmtDateTime, localDatetimeValue } from "./utils.js";
 
 const TRIP_STATUSES = ["Gepland", "Onderweg", "Afgerond", "Geannuleerd"];
@@ -14,9 +15,24 @@ export class UIManager {
             alert(message);
         };
 
+        // Exact coordinates of a chosen autocomplete suggestion; null means
+        // the free-typed text will be geocoded via Nominatim as fallback.
+        this.startPick = null;
+        this.endPick = null;
+
         this.setupTheme();
         this.setupNavigation();
         this.setupForms();
+        this.setupAutocomplete();
+    }
+
+    setupAutocomplete() {
+        attachAutocomplete(document.getElementById("planner-start"), (pick) => {
+            this.startPick = pick;
+        });
+        attachAutocomplete(document.getElementById("planner-end"), (pick) => {
+            this.endPick = pick;
+        });
     }
 
     // --- Chrome -------------------------------------------------------------
@@ -79,7 +95,9 @@ export class UIManager {
         document.getElementById("planner-results").classList.add("hidden");
         this.setLoading(true);
         try {
-            const ok = await this.map.calculateRoute(start, end, departure);
+            const ok = await this.map.calculateRoute(
+                start, end, departure, this.startPick, this.endPick
+            );
             if (!ok) {
                 this.setLoading(false);
                 alert("Kan een van de adressen niet vinden. Voeg eventueel het land toe (bijv. 'Parijs, Frankrijk').");
@@ -156,6 +174,9 @@ export class UIManager {
 
     // Open a saved trip in the planner and re-run the route for it.
     showTripOnMap(trip) {
+        // Programmatic .value changes fire no input event, so clear stale picks.
+        this.startPick = null;
+        this.endPick = null;
         document.getElementById("planner-start").value = trip.startLocation;
         document.getElementById("planner-end").value = trip.endLocation;
         if (trip.departureTime) {

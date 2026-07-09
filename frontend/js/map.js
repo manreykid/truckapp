@@ -99,8 +99,9 @@ export class MapManager {
 
     // Resolve both addresses and kick off routing. Route results arrive via
     // the onRoute/onRouteError callbacks (Leaflet events). Returns false if
-    // an address could not be resolved.
-    async calculateRoute(startAddress, endAddress, departureStr) {
+    // an address could not be resolved. Picks from the autocomplete carry
+    // exact coordinates and skip the geocoding fallback entirely.
+    async calculateRoute(startAddress, endAddress, departureStr, startPick = null, endPick = null) {
         if (!this.isInitialized) {
             this.onRouteError("De kaart is niet beschikbaar; routeplanning is nu niet mogelijk.");
             return true; // error already reported via onRouteError
@@ -108,8 +109,8 @@ export class MapManager {
         this.pendingDeparture = departureStr || null;
 
         const [start, end] = await Promise.all([
-            this.geocodeAddress(startAddress),
-            this.geocodeAddress(endAddress),
+            startPick ? { lat: startPick.lat, lng: startPick.lon } : this.geocodeAddress(startAddress),
+            endPick ? { lat: endPick.lat, lng: endPick.lon } : this.geocodeAddress(endAddress),
         ]);
         if (!start || !end) return false;
 

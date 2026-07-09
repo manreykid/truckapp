@@ -11,7 +11,9 @@ service stops geocoded from OpenStreetMap.
 
 ## Features
 
-- **Route planner** (Leaflet + OSRM) with address search, a Dutch rush-hour
+- **Route planner** (Leaflet + OSRM) with **address autocomplete**
+  (search-as-you-type via Photon, incl. street + house number; a picked
+  suggestion routes on its exact coordinates), a Dutch rush-hour
   heuristic on the expected travel time, and **multi-stop EU rest planning**:
   one suggested rest stop per 4.5 hours of driving (EU regulation 561/2006),
   drawn on the map and listed in the summary.

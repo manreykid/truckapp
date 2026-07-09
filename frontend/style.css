@@ -138,6 +138,12 @@ input:checked + .slider:before { transform: translateX(20px); }
 .trip-actions button, .trip-actions select { background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px; padding: 6px 10px; font-size: 13px; cursor: pointer; color: var(--text-color); transition: background 0.2s; }
 .trip-actions button:hover { background: var(--border-color); }
 
+/* Adres-autocomplete (Photon) */
+.ac-wrap { position: relative; }
+.ac-list { position: absolute; top: 100%; left: 0; right: 0; z-index: 1100; margin: 2px 0 0; padding: 4px; list-style: none; background: var(--bg-secondary-color); border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 6px 16px var(--shadow-color); max-height: 240px; overflow-y: auto; }
+.ac-list li { padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 13.5px; color: var(--text-color); }
+.ac-list li:hover, .ac-list li.active { background: var(--hover-color); }
+
 /* Rustplaats-suggesties in de planner */
 #rest-stop-list { list-style: none; padding: 0; margin: 0 0 15px 0; }
 #rest-stop-list li { padding: 8px 10px; margin-bottom: 6px; background: var(--hover-color); border-radius: 6px; font-size: 13px; }
